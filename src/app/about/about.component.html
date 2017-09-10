@@ -54,7 +54,7 @@
       </div>
 
 
-        <div fxFlex>
+        <div fxFlex *ngIf="leaders">
 			<h2>Corporate Leadership</h2>
 			<md-list>
 				<md-list-item *ngFor="let lead of leaders">
@@ -64,5 +64,8 @@
 					<h4 mdLine>{{lead.description}}</h4>
 				</md-list-item>
 			</md-list>
-       </div>
+	    </div>
+		<div [hidden]="leaders">
+		<md-spinner></md-spinner><h4>Loading . . . Please Wait</h4>
+		</div>
 </div>
