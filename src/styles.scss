@@ -31,14 +31,21 @@ body {
 
 .background-primary {
     background-color: $background-dark!important;
-  }
+}
 .background-accent {
     background-color: $accent-color!important;
-  }
+}
 .text-floral-white {
     color: floralwhite!important;
 }
 
 .flex-spacer {
   flex: 1 1 auto;
+}
+
+.highlight {
+    background-color: $background-pale;
+    border: 1px solid $primary-color-dark;
+    z-index: 1;
+    transform: scale(1.01);
 }
