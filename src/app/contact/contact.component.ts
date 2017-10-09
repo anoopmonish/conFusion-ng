@@ -1,19 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback, ContactType } from '../shared/feedback';
+import { FeedbackService } from '../services/feedback.service';
+
+import { visibility, flyInOut, expand } from '../animations/app.animation';
 
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+  styleUrls: ['./contact.component.scss'],
+  host: {
+  '[@flyInOut]': 'true',
+  'style': 'display: block;'
+  },
+  animations: [
+	visibility(),
+    flyInOut(),
+	expand()
+  ]
 })
 export class ContactComponent implements OnInit {
 
   feedbackForm: FormGroup;
   feedback: Feedback;
   contactType = ContactType;
+  stageNumber = 1;
+  errMess: string;
+  feedbackresponse: Feedback
 
-  constructor(private fb: FormBuilder) {
+  constructor(private feedbackService: FeedbackService,
+		private fb: FormBuilder) {
     this.createForm();
   }
 
@@ -67,15 +83,25 @@ export class ContactComponent implements OnInit {
   onSubmit() {
     this.feedback = this.feedbackForm.value;
     console.log(this.feedback);
-    this.feedbackForm.reset({
-      firstname: '',
-      lastname: '',
-      telnum: '',
-      email: '',
-      agree: false,
-      contacttype: 'None',
-      message: ''
-    });
+	this.stageNumber = 2;
+	this.errMess = '';
+	this.feedbackService.postFeedback(this.feedback)
+      .subscribe(feedback => {
+		this.stageNumber = 3;
+		this.feedbackresponse = feedback;
+		setTimeout(() => {
+			this.stageNumber = 1;
+			this.feedbackForm.reset({
+			  firstname: '',
+			  lastname: '',
+			  telnum: '',
+			  email: '',
+			  agree: false,
+			  contacttype: 'None',
+			  message: ''
+			});
+		},5000); },
+        errmess => { this.stageNumber = 1; this.errMess = <any>errmess; });
   }
 
   onValueChanged(data?: any) {
